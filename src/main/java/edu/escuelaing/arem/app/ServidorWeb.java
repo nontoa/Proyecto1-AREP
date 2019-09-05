@@ -5,41 +5,32 @@
  */
 package edu.escuelaing.arem.app;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
+import java.io.*;
 
-/**
- *
- * @author Nicolas
- */
 public class ServidorWeb {
 
     public static void main(String[] args) throws IOException {
-        boolean flag = true;
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(8081);
-        } catch (Exception e) {
-            System.exit(1);
-        }
-        Socket clienteSocket = null;
-        PrintWriter out = null;
-        BufferedReader in = null;
-        while (flag) {
+        while (true) {
+            ServerSocket serverSocket = null;
             try {
-                System.out.println("Ready");
-                clienteSocket = serverSocket.accept();
-            } catch (Exception e) {
+                serverSocket = new ServerSocket(getPort());
+            } catch (IOException e) {
+                System.err.println("Could not listen on port: " + getPort());
                 System.exit(1);
             }
-            out = new PrintWriter(clienteSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clienteSocket.getInputStream()));
-
-            String inputLine;
+            Socket clientSocket = null;
+            try {
+                System.out.println("Listo para recibir ...");
+                clientSocket = serverSocket.accept();
+            } catch (IOException e) {
+                System.err.println("Accept failed.");
+                System.exit(1);
+            }
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(clientSocket.getInputStream()));
+            String inputLine, outputLine;
             String path = "";
             while ((inputLine = in.readLine()) != null) {
                 System.out.println("Received: " + inputLine);
@@ -51,28 +42,68 @@ public class ServidorWeb {
                     path = get[1];
                 }
             }
-            System.out.println(path);
-            
-            out.println("HTTP/1.1 200 OK"+ "\r\n");
-            out.println("Content-Type: text/html"+ "\r\n");
-            out.println("<!DOCTYPE html>"+ "\r\n");
-            out.println("<html>"+ "\r\n");
-            out.println("<head>"+ "\r\n");
-            out.println("<meta charset=\"UTF-8\">"+ "\r\n");
-            out.println("<title>Title of the document</title>"+ "\r\n");
-            out.println("</head>"+ "\r\n");
-            out.println("<body>"+ "\r\n");
-            out.println("My Web Site"+ "\r\n");
-            out.println("</body>"+ "\r\n");
-            out.println("</html>"+ "\r\n");
-            out.flush();
-            
 
+            //System.out.println(path);            
+            if (path.equals("/index.html")) {
+                out.write(index());
+            } else {
+                out.write(basic());
+            }
+            out.close();
+
+            in.close();
+
+            clientSocket.close();
+
+            serverSocket.close();
         }
-        out.close();
-        in.close();
-        clienteSocket.close();
-        serverSocket.close();
     }
 
+    static int getPort() {
+        if (System.getenv("PORT") != null) {
+            return Integer.parseInt(System.getenv("PORT"));
+        }
+        return 8081;
+    }
+
+    public static String index() {
+        String outputLine = "";
+        outputLine = "HTTP/1.1 200 OK\r\n"
+                + "Content-Type: text/html\r\n"
+                + "\r\n"
+                + "<!DOCTYPE html>\n"
+                + "<html>\n"
+                + "<head>\n"
+                + "<meta charset=\"UTF-8\">\n"
+                + "<title>Title of the document</title>\n"
+                + "</head>\n"
+                + "<center>\n"
+                + "<h1> Bienvenidos </h1>\n"
+                + "</center> \n"
+                + "<br>\n"
+                + "<h2> Paginas Web: <h2>\n"
+                + "<a href = \"https://www.w3schools.com\" > Visit W3Schools</a>\n"                
+                + "</html>\n";
+
+        return (outputLine);
+    }
+
+    public static String basic() {
+        String outputLine = "";
+        outputLine = "HTTP/1.1 200 OK\r\n"
+                + "Content-Type: text/html\r\n"
+                + "\r\n"
+                + "<!DOCTYPE html>\n"
+                + "<html>\n"
+                + "<head>\n"
+                + "<meta charset=\"UTF-8\">\n"
+                + "<title>Title of the document</title>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "<h1>Mi propio mensajeAAAAAAAAAAAAAAAA</h1>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        return (outputLine);
+    }
 }
