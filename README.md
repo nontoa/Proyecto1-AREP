@@ -22,6 +22,43 @@ Despues de clonar el archivo para correrlo con:
 
 * [Maven](https://maven.apache.org/) - Gestión de dependencias
 
+## Pruebas:
+
+### Archivos HTML:
+
+Se pueden generar peticiones de archivos Html ya establecidos en el proyecto:
+
+* Petición para página de Facebook.
+
+![Screenshot](images/Face.PNG)
+
+* Petición para página de Twitter.
+
+![Screenshot](images/Twitter.PNG)
+
+* Petición para página de Prueba.
+
+![Screenshot](images/Prue.PNG)
+
+### Imágenes:
+
+Se pueden generar peticiones de imágenes PNG ya establecidos en el proyecto:
+
+* Petición para imagen de Netflix.
+
+![Screenshot](src/main/resources/Netflix.PNG)
+
+* Petición para imagne de Tux.
+
+![Screenshot](src/main/resources/tux.PNG)
+
+* Petición para imagen de Completed.
+
+![Screenshot](src/main/resources/completed.PNG)
+
+* Petición para imagen de Not Found.
+
+![Screenshot](src/main/resources/notF.PNG)
 
 ## Autor
 
