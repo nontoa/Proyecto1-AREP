@@ -22,6 +22,7 @@ public class HandlerStatic implements Handler {
     public String process(Object[] arg) throws Exception {
         return (String) method.invoke(method, arg);
     }
+        
 
     public Method getMethod() {
         return method;

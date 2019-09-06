@@ -19,8 +19,7 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 /**
- * Hello world!
- *
+ * Esta clase es la encargada de manejar todo el framework.
  */
 public class App {
 
@@ -31,25 +30,27 @@ public class App {
     private static final ClassLoader classLoader = ClassLoader.getSystemClassLoader();
     private static String requestUrl = "";
 
+    /**
+     * Este metodo se encarga de guardar en el hasmap cada metodo.
+     */
     public static void initialize() {
         try {
-            String nameClass = "edu.escuelaing.arem.app.App";
+            String nameClass = "edu.escuelaing.arem.annotation.AppWeb";
             Class<?> c = Class.forName(nameClass);
             System.out.println(c.getMethods());
             for (Method m : c.getMethods()) {
-
                 if (m.isAnnotationPresent(Web.class)) {
-                    System.out.println(m.getName());
                     Class[] params = m.getParameterTypes();
-                    hashMap.put("/apps/" + m.getAnnotation(Web.class).value(),
+                    hashMap.put("/pojo/" + m.getAnnotation(Web.class).value(),
                             new HandlerStatic(c.getDeclaredMethod(m.getName(), params)));
                 }
             }
-            Object[] param = new Object[]{"JOhn"};            
-
+            Object[] param = new Object[]{"Nicolas"};
+            System.out.println(hashMap.get("/pojo/param").process(param));
         } catch (Exception e) {
             e.printStackTrace();
         }
+                
     }
 
     public static void listen() throws Exception {
@@ -63,17 +64,33 @@ public class App {
         }
     }
 
-    private static void postPage() throws IOException {
-        if (requestUrl.contains("/apps")) {
+    public static void notFound() {
+        try {
+            BufferedReader readerFile = new BufferedReader(new FileReader(classLoader.getResource("notFound.html").getFile()));
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+            String page = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n"
+                    + "\r\n";
+            out.println(page);
+            while (readerFile.ready()) {
+                out.println(readerFile.readLine());
+            }
+            out.close();
+        } catch (IOException ex) {
+            System.err.println("Error:");
+        }
+    }
+
+    public static void postPage() throws IOException {
+        if (requestUrl.contains("html")) {
+            readPage(requestUrl);
+        } else if (requestUrl.contains("/pojo")) {
             readApps(requestUrl);
-        } else if (requestUrl.contains("html")) {
-            System.out.println(requestUrl);
-            readHtml(requestUrl);
         } else if (requestUrl.contains("PNG")) {
-            readJpg(requestUrl, clientSocket);
+            readImages(requestUrl, clientSocket);
         } else {
             notFound();
         }
+
     }
 
     public static void setRequest(Socket clientSocket) throws IOException {
@@ -88,40 +105,39 @@ public class App {
                 requestUrl = inputLine.split(" ")[1];
                 System.out.println("Adress to show: " + requestUrl);
             }
-        }        
+
+        }
     }
 
-    private static void readApps(String inputLine) throws IOException {
+    public static void readApps(String inputLine) throws IOException {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
-        int idApps = inputLine.indexOf("/apps");
+        int idApps = inputLine.indexOf("/pojo");
         String subStrg = "";
         System.out.println(inputLine + "  line ");
         for (int ji = idApps; ji < inputLine.length() && inputLine.charAt(ji) != ' '; ++ji) {
             subStrg += inputLine.charAt(ji);
         }
         try {
-            out.write("HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n");
-
-            //System.out.println(subStrg.substring(0, id));
+            out.write("HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n");                        
             if (subStrg.contains(":")) {
                 int id = subStrg.indexOf(":");
                 out.write(hashMap.get(subStrg.substring(0, id)).process(new Object[]{subStrg.substring(id + 1)}));
-            } else {
+            }             
+            else {
                 out.write(hashMap.get(subStrg).process());
             }
             out.close();
         } catch (Exception e) {
-            notFound();
-            
+            notFound();            
         }
     }
 
-    private static void readHtml(String inputLine) throws IOException {
+    public static void readPage(String inputLine) throws IOException {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
-        int i = inputLine.indexOf('/') + 1;
+        int pag = inputLine.indexOf('/') + 1;
         String urlInputLine = "";
-        while (!urlInputLine.endsWith(".html") && i < inputLine.length()) {
-            urlInputLine += (inputLine.charAt(i++));
+        while (!urlInputLine.endsWith(".html") && pag < inputLine.length()) {
+            urlInputLine += (inputLine.charAt(pag++));
         }
         try {
             BufferedReader readerFile = new BufferedReader(new FileReader(classLoader.getResource(urlInputLine).getFile()));
@@ -135,61 +151,42 @@ public class App {
             System.out.println(out.toString());
         } catch (Exception e) {
             notFound();
-            //System.err.println("Err: not is possible read the html " + urlInputLine);
         }
     }
 
-    private static void readJpg(String inputLine, Socket clientSocket) throws IOException {
+    public static void readImages(String inputLine, Socket clientSocket) throws IOException {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
-
         String urlInputLine = "";
-        int i = inputLine.indexOf('/') + 1;
-        while (!urlInputLine.endsWith(".PNG") && i < inputLine.length()) {
-            urlInputLine += (inputLine.charAt(i++));
+        int img = inputLine.indexOf('/') + 1;
+        while (!urlInputLine.endsWith(".PNG") && img < inputLine.length()) {
+            urlInputLine += (inputLine.charAt(img++));
         }
         try {
-
             File image = new File(classLoader.getResource(urlInputLine).getFile());
             BufferedImage bImage = ImageIO.read(image);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ImageIO.write(bImage, "PNG", bos);
-            byte[] github = bos.toByteArray();
+            byte[] imagen = bos.toByteArray();
             DataOutputStream outImg = new DataOutputStream(clientSocket.getOutputStream());
             outImg.writeBytes("HTTP/1.1 200 OK \r\n");
             outImg.writeBytes("Content-Type: image/PNG\r\n");
-            outImg.writeBytes("Content-Length: " + github.length);
+            outImg.writeBytes("Content-Length: " + imagen.length);
             outImg.writeBytes("\r\n\r\n");
-            outImg.write(github);
+            outImg.write(imagen);
             outImg.close();
             out.println(outImg.toString());
         } catch (Exception e) {
             notFound();
-            
+
         }
 
-    }
-
-    private static void notFound() {
-        try {
-            BufferedReader readerFile = new BufferedReader(new FileReader(classLoader.getResource("notFound.html").getFile()));
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
-            String page = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n"
-                    + "\r\n";
-            out.println(page);
-            while (readerFile.ready()) {
-                out.println(readerFile.readLine());
-            }
-            out.close();
-        } catch (IOException ex) {
-            System.err.println("Err:");
-        }
     }
 
     static int getPort() {
         if (System.getenv("PORT") != null) {
             return Integer.parseInt(System.getenv("PORT"));
         }
-        return 40567; // returns default port if heroku-port isn't set (i.e. on localhost)
+        return 40567;
     }
 
 }
