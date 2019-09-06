@@ -22,6 +22,10 @@ Despues de clonar el archivo para correrlo con:
 
 * [Maven](https://maven.apache.org/) - Gestión de dependencias
 
+## Descripción:
+
+Servidor Web (tipo Apache) en Java. El servidor es capaz de entregar páginas html e imágenes tipo PNG. Igualmente el servidor provee un framework IoC para la construcción de aplicaciones web a partir de POJOS. La aplicación se despliega en Heroku. El servidor atiende múltiples solicitudes no concurrentes.
+
 ## Pruebas:
 
 ### Archivos HTML:
@@ -62,15 +66,21 @@ Se pueden generar peticiones de imágenes PNG ya establecidos en el proyecto:
 
 ### Pojos:
 
-Se pueden generar peticiones de imágenes PNG ya establecidos en el proyecto:
+El pojo tiene un parametro el cual actua diferente si es un número a si es una cadena normal. Cuando es una cadena normal saluda, si es un número calcula la raíz cuadrada de ese número.
 
-* Petición para imagen de Netflix.
+* Cadena normal.
 
 ![Screenshot](images/pojo1.PNG)
 
-* Petición para imagne de Tux.
+* Número.
 
 ![Screenshot](images/pojo2.PNG)
+
+## Heroku Deploy:
+
+El proyecto se desplego en heroku en la siguiente dirección:
+
+https://proyectoarep.herokuapp.com
 
 
 ## Autor
