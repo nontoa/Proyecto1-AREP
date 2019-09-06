@@ -46,19 +46,32 @@ Se pueden generar peticiones de imágenes PNG ya establecidos en el proyecto:
 
 * Petición para imagen de Netflix.
 
-![Screenshot](src/main/resources/Netflix.PNG)
+![Screenshot](images/Netflix.PNG)
 
 * Petición para imagne de Tux.
 
-![Screenshot](src/main/resources/tux.PNG)
+![Screenshot](images/tux.PNG)
 
 * Petición para imagen de Completed.
 
-![Screenshot](src/main/resources/completed.PNG)
+![Screenshot](images/completed.PNG)
 
 * Petición para imagen de Not Found.
 
-![Screenshot](src/main/resources/notF.PNG)
+![Screenshot](images/notF.PNG)
+
+### Pojos:
+
+Se pueden generar peticiones de imágenes PNG ya establecidos en el proyecto:
+
+* Petición para imagen de Netflix.
+
+![Screenshot](images/pojo1.PNG)
+
+* Petición para imagne de Tux.
+
+![Screenshot](images/pojo2.PNG)
+
 
 ## Autor
 
