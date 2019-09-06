@@ -53,6 +53,10 @@ public class App {
                 
     }
 
+    /**
+     * Este metodo se encarga de crear el servidor para que escuche por un 
+     * puerto determinado. 
+     */
     public static void listen() throws Exception {
         while (true) {
             serverSocket = SocketServidor.runServer();
@@ -64,6 +68,10 @@ public class App {
         }
     }
 
+    /**
+     * Este metodo se encarga de buscar la pagina notFound y mostrarla en 
+     * el browser.
+     */
     public static void notFound() {
         try {
             BufferedReader readerFile = new BufferedReader(new FileReader(classLoader.getResource("notFound.html").getFile()));
@@ -80,6 +88,11 @@ public class App {
         }
     }
 
+    /**
+     * Este metodo se encarga de comparar la peticion y enviarla al metodo
+     * correspondiente.
+     * @throws IOException 
+     */
     public static void postPage() throws IOException {
         if (requestUrl.contains("html")) {
             readPage(requestUrl);
@@ -93,6 +106,11 @@ public class App {
 
     }
 
+    /**
+     * Este metodo se encarga de mostrar las peticiones del cliente.
+     * @param clientSocket
+     * @throws IOException 
+     */
     public static void setRequest(Socket clientSocket) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         String inputLine;
@@ -109,6 +127,12 @@ public class App {
         }
     }
 
+    /**
+     * Este metodo se encarga de llamar al pojo para mostrar una pagina en el
+     * browser.
+     * @param inputLine
+     * @throws IOException 
+     */
     public static void readApps(String inputLine) throws IOException {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         int idApps = inputLine.indexOf("/pojo");
@@ -132,6 +156,11 @@ public class App {
         }
     }
 
+    
+    /**
+     * Este metodo se encarga de buscar la pagina con extension html y mostrarla en 
+     * el browser.
+     */
     public static void readPage(String inputLine) throws IOException {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         int pag = inputLine.indexOf('/') + 1;
@@ -154,6 +183,10 @@ public class App {
         }
     }
 
+    /**
+     * Este metodo se encarga de buscar la pagina con extension PNG y mostrarla en 
+     * el browser.
+     */
     public static void readImages(String inputLine, Socket clientSocket) throws IOException {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         String urlInputLine = "";
