@@ -34,11 +34,11 @@ Se pueden generar peticiones de archivos Html ya establecidos en el proyecto:
 
 * Petición para página principal.
 
-![Screenshot](images/Face.PNG)
+![Screenshot](images/Principal.PNG)
 
 * Petición para página de not found.
 
-![Screenshot](images/Twitter.PNG)
+![Screenshot](images/not.PNG)
 
 * Petición para página de Prueba.
 
@@ -80,7 +80,7 @@ El pojo tiene un parametro el cual actua diferente si es un número a si es una 
 
 El proyecto se desplego en heroku en la siguiente dirección:
 
-https://proyectoarep.herokuapp.com
+https://proyectoarep.herokuapp.com/index.html
 
 
 ## Autor
