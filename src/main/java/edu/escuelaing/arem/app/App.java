@@ -120,7 +120,7 @@ public class App {
             readPage(requestUrl);
         } else if (requestUrl.contains("/pojo")) {
             readApps(requestUrl);
-        } else if (requestUrl.contains("PNG")) {
+        } else if (requestUrl.contains("png")) {
             readImages(requestUrl, clientSocket);
         } else {
             notFound();
@@ -213,18 +213,18 @@ public class App {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         String urlInputLine = "";
         int img = inputLine.indexOf('/') + 1;
-        while (!urlInputLine.endsWith(".PNG") && img < inputLine.length()) {
+        while (!urlInputLine.endsWith(".png") && img < inputLine.length()) {
             urlInputLine += (inputLine.charAt(img++));
         }
         try {
             File image = new File(classLoader.getResource(urlInputLine).getFile());
             BufferedImage bImage = ImageIO.read(image);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ImageIO.write(bImage, "PNG", bos);
+            ImageIO.write(bImage, "png", bos);
             byte[] imagen = bos.toByteArray();
             DataOutputStream outImg = new DataOutputStream(clientSocket.getOutputStream());
             outImg.writeBytes("HTTP/1.1 200 OK \r\n");
-            outImg.writeBytes("Content-Type: image/PNG\r\n");
+            outImg.writeBytes("Content-Type: image/png\r\n");
             outImg.writeBytes("Content-Length: " + imagen.length);
             outImg.writeBytes("\r\n\r\n");
             outImg.write(imagen);
