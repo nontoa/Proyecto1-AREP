@@ -46,7 +46,7 @@ public class App {
                 }
             }
             Object[] param = new Object[]{"Nicolas"};
-            System.out.println(hashMap.get("/pojo/param").process(param));
+            System.out.println(hashMap.get("/pojo/param").process(param));            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -75,6 +75,26 @@ public class App {
     public static void notFound() {
         try {
             BufferedReader readerFile = new BufferedReader(new FileReader(classLoader.getResource("notFound.html").getFile()));
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+            String page = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n"
+                    + "\r\n";
+            out.println(page);
+            while (readerFile.ready()) {
+                out.println(readerFile.readLine());
+            }
+            out.close();
+        } catch (IOException ex) {
+            System.err.println("Error:");
+        }
+    }
+    
+    /**
+     * Este metodo se encarga de buscar la pagina index y mostrarla en 
+     * el browser.
+     */
+    public static void indexPage() {
+        try {
+            BufferedReader readerFile = new BufferedReader(new FileReader(classLoader.getResource("index.html").getFile()));
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             String page = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n"
                     + "\r\n";
