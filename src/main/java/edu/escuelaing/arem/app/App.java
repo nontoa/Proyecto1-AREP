@@ -34,29 +34,30 @@ public class App {
      * Este metodo se encarga de guardar en el hasmap cada metodo.
      */
     public static void initialize() {
-        try {
-            String nameClass = "edu.escuelaing.arem.annotation.AppWeb";
-            Class<?> c = Class.forName(nameClass);
-            System.out.println(c.getMethods());
-            for (Method m : c.getMethods()) {
-                if (m.isAnnotationPresent(Web.class)) {
-                    Class[] params = m.getParameterTypes();
-                    hashMap.put("/pojo/" + m.getAnnotation(Web.class).value(),
+        try {            
+            File archivo = new File(System.getProperty("user.dir") + "/src/main/java/edu/escuelaing/arem/annotation");
+            File[] ficheros = archivo.listFiles();            
+            for (File ruta : ficheros) {
+                String name = ruta.getName();
+                name = "edu.escuelaing.arem.annotation." + name.substring(0, name.indexOf("."));
+                Class<?> c = Class.forName(name);
+                for (Method m : c.getMethods()) {
+                    if (m.getAnnotations().length > 0) {                        
+                        Class[] params = m.getParameterTypes();
+                        hashMap.put("/pojo/" + m.getAnnotation(Web.class).value(),
                             new HandlerStatic(c.getDeclaredMethod(m.getName(), params)));
+                    }
                 }
             }
-            Object[] param = new Object[]{"Nicolas"};
-            System.out.println(hashMap.get("/pojo/param").process(param));            
-        } catch (Exception e) {
+            }catch (Exception e) {
             e.printStackTrace();
         }
-                
-    }
 
-    /**
-     * Este metodo se encarga de crear el servidor para que escuche por un 
-     * puerto determinado. 
-     */
+        }
+        /**
+         * Este metodo se encarga de crear el servidor para que escuche por un
+         * puerto determinado.
+         */
     public static void listen() throws Exception {
         while (true) {
             serverSocket = SocketServidor.runServer();
@@ -69,8 +70,8 @@ public class App {
     }
 
     /**
-     * Este metodo se encarga de buscar la pagina notFound y mostrarla en 
-     * el browser.
+     * Este metodo se encarga de buscar la pagina notFound y mostrarla en el
+     * browser.
      */
     public static void notFound() {
         try {
@@ -87,10 +88,10 @@ public class App {
             System.err.println("Error:");
         }
     }
-    
+
     /**
-     * Este metodo se encarga de buscar la pagina index y mostrarla en 
-     * el browser.
+     * Este metodo se encarga de buscar la pagina index y mostrarla en el
+     * browser.
      */
     public static void indexPage() {
         try {
@@ -111,7 +112,8 @@ public class App {
     /**
      * Este metodo se encarga de comparar la peticion y enviarla al metodo
      * correspondiente.
-     * @throws IOException 
+     *
+     * @throws IOException
      */
     public static void postPage() throws IOException {
         if (requestUrl.contains("html")) {
@@ -128,8 +130,9 @@ public class App {
 
     /**
      * Este metodo se encarga de mostrar las peticiones del cliente.
+     *
      * @param clientSocket
-     * @throws IOException 
+     * @throws IOException
      */
     public static void setRequest(Socket clientSocket) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -150,8 +153,9 @@ public class App {
     /**
      * Este metodo se encarga de llamar al pojo para mostrar una pagina en el
      * browser.
+     *
      * @param inputLine
-     * @throws IOException 
+     * @throws IOException
      */
     public static void readApps(String inputLine) throws IOException {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -162,24 +166,22 @@ public class App {
             subStrg += inputLine.charAt(ji);
         }
         try {
-            out.write("HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n");                        
+            out.write("HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n");
             if (subStrg.contains(":")) {
                 int id = subStrg.indexOf(":");
                 out.write(hashMap.get(subStrg.substring(0, id)).process(new Object[]{subStrg.substring(id + 1)}));
-            }             
-            else {
+            } else {
                 out.write(hashMap.get(subStrg).process());
             }
             out.close();
         } catch (Exception e) {
-            notFound();            
+            notFound();
         }
     }
 
-    
     /**
-     * Este metodo se encarga de buscar la pagina con extension html y mostrarla en 
-     * el browser.
+     * Este metodo se encarga de buscar la pagina con extension html y mostrarla
+     * en el browser.
      */
     public static void readPage(String inputLine) throws IOException {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -204,8 +206,8 @@ public class App {
     }
 
     /**
-     * Este metodo se encarga de buscar la pagina con extension PNG y mostrarla en 
-     * el browser.
+     * Este metodo se encarga de buscar la pagina con extension PNG y mostrarla
+     * en el browser.
      */
     public static void readImages(String inputLine, Socket clientSocket) throws IOException {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
