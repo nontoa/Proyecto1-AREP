@@ -120,7 +120,7 @@ public class App {
             readPage(requestUrl);
         } else if (requestUrl.contains("/pojo")) {
             readApps(requestUrl);
-        } else if (requestUrl.contains("png")) {
+        } else if (requestUrl.contains("png") || requestUrl.contains("PNG")) {
             readImages(requestUrl, clientSocket);
         } else {
             notFound();
@@ -212,7 +212,7 @@ public class App {
     public static void readImages(String inputLine, Socket clientSocket) throws IOException {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         String urlInputLine = "";
-        int img = inputLine.indexOf('/') + 1;
+        int img = inputLine.indexOf('/') + 1;        
         while (!urlInputLine.endsWith(".png") && img < inputLine.length()) {
             urlInputLine += (inputLine.charAt(img++));
         }
