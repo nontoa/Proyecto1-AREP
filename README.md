@@ -32,11 +32,11 @@ Servidor Web (tipo Apache) en Java. El servidor es capaz de entregar páginas ht
 
 Se pueden generar peticiones de archivos Html ya establecidos en el proyecto:
 
-* Petición para página de Facebook.
+* Petición para página principal.
 
 ![Screenshot](images/Face.PNG)
 
-* Petición para página de Twitter.
+* Petición para página de not found.
 
 ![Screenshot](images/Twitter.PNG)
 
