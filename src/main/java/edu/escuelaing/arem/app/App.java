@@ -21,7 +21,7 @@ import javax.imageio.ImageIO;
 /**
  * Esta clase es la encargada de manejar todo el framework.
  */
-public class App {
+public class App implements Runnable {
 
     public static ServerSocket serverSocket = null;
     private static Socket clientSocket;
@@ -30,6 +30,25 @@ public class App {
     private static final ClassLoader classLoader = ClassLoader.getSystemClassLoader();
     private static String requestUrl = "";
 
+    
+    public App (Socket clienteS){
+        this.clientSocket = clienteS;
+    }
+    
+    @Override
+    public void run() {            
+        try{
+            //serverSocket = SocketServidor.runServer();
+            //clientSocket = SocketCliente.receiveRequest(serverSocket);
+            setRequest(clientSocket);
+            postPage();
+            clientSocket.close();
+            serverSocket.close();
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+    
     /**
      * Este metodo se encarga de guardar en el hasmap cada metodo.
      */
@@ -243,5 +262,7 @@ public class App {
         }
         return 40567;
     }
+       
+    
 
 }

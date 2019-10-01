@@ -29,4 +29,6 @@ public class SocketCliente {
         }
         return request;
     }
+    
+   
 }

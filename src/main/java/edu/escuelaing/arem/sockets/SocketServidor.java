@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
  * @author Nicolas
  */
 public class SocketServidor {
+              
 
     public static ServerSocket runServer() {
         ServerSocket serverSocket = null;
